@@ -1,9 +1,375 @@
 [project]
 name = "fastorders-api"
 version = "0.1.0"
-description = "Add your description here"
+description = "The RESTful API for orders management using FastAPI"
+license = "MIT"
+readme = "README.md"
+authors = [
+    { name = "Juan Pablo Cadena Aguilar", email = "jpcadena@espol.edu.ec" },
+]
+maintainers = [
+    { name = "Juan Pablo Cadena Aguilar", email = "jpcadena@espol.edu.ec" },
+]
 requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.116.1",
+    "pydantic>=2.11.7",
+    "pydantic-extra-types>=2.10.5",
+    "pydantic-settings>=2.10.1",
     "uvicorn>=0.35.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/jpcadena/fastorders-api"
+Repository = "https://github.com/jpcadena/fastorders-api"
+Documentation = "https://github.com/jpcadena/fastorders-api"
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.6",
+    "codespell>=2.4.1",
+    "commitizen>=4.8.3",
+    "mypy>=1.17.0",
+    "pre-commit>=4.2.0",
+    "ruff>=0.12.4",
+    "safety>=3.2.9",
+]
+test = [
+    "coverage>=7.9.2",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+]
+
+[tool.uv]
+default-groups = ["dev", "test"]
+
+[tool.codespell]
+skip = './.venv,./venv,./.ruff_cache,./.mypy_cache,./.pytest_cache,./openapi.json'
+count = true
+quiet-level = 3
+
+[tool.commitizen]
+version_files = [
+    "pyproject.toml:version",
+]
+version_scheme = "pep440"
+version_provider = "pep621"
+tag_format = "v$version"
+update_changelog_on_bump = true
+changelog_start_rev = "v1.0.0"
+annotated_tag = true
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"]
+]
+
+[tool.commitizen.customize]
+message_template = "{{change_type}}:{% if show_message %} {{message}}{% endif %}"
+example = "feat: Added support for customized commitizen configuration"
+schema = "<type>: <body>"
+schema_pattern = "(feat|fix|refactor|perf|docs|test|ci|build|chore|revert):(\\s.*)"
+bump_pattern = "^(BREAK|feat|fix|hotfix)"
+bump_map = { "BREAK" = "MAJOR", "feat" = "MINOR", "fix" = "PATCH", "hotfix" = "PATCH" }
+change_type_order = ["BREAKING CHANGE", "feat", "fix", "refactor", "perf", "docs"]
+info_path = "cz_customize_info.txt"
+info = """
+This is a customized commitizen configuration enforcing structured commit messages.
+"""
+commit_parser = "^(?P<change_type>feat|fix|refactor|perf|docs|test|ci|build|chore|revert):\\s(?P<message>.*)?"
+changelog_pattern = "^(feat|fix|refactor|perf|docs|test|ci|build|chore|revert)?(!)?"
+change_type_map = { "feat" = "Features", "fix" = "Bug Fixes", "refactor" = "Code Refactoring", "perf" = "Performance Improvements", "docs" = "Documentation", "test" = "Testing", "ci" = "Continuous Integration", "build" = "Build System", "chore" = "Chores", "revert" = "Reverts" }
+
+[[tool.commitizen.customize.questions]]
+type = "list"
+name = "change_type"
+choices = [
+    { value = "feat", name = "feat: A new feature." },
+    { value = "fix", name = "fix: A bug fix." },
+    { value = "refactor", name = "refactor: Code changes that do not fix a bug or add a feature." },
+    { value = "perf", name = "perf: Performance improvements." },
+    { value = "docs", name = "docs: Documentation improvements." },
+    { value = "test", name = "test: Adding or modifying tests." },
+    { value = "ci", name = "ci: CI/CD configuration updates." },
+    { value = "build", name = "build: Changes affecting build scripts or dependencies." },
+    { value = "chore", name = "chore: Minor or maintenance changes." },
+    { value = "revert", name = "revert: Reverting a previous commit." }
+]
+message = "Select the type of change you are committing"
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "message"
+message = "Write a short commit message"
+
+[[tool.commitizen.customize.questions]]
+type = "confirm"
+name = "show_message"
+message = "Do you want to add a detailed body message in commit?"
+
+[tool.bandit]
+exclude_dirs = [
+    "venv/*",
+    ".mypy_cache/*",
+    ".pytest_cache/*",
+    ".ruff_cache/*",
+    ".venv/*",
+    "tests/*",
+]
+tests = ["B301"]
+skips = ["B101", "B601", "B201"]
+
+[tool.mypy]
+exclude = '''
+(
+    /(\.venv
+  | \.mypy_cache
+  | \.ruff_cache
+  | \.pytest_cache
+  | venv
+  | tests)/
+)
+'''
+follow_imports = "silent"
+python_version = "3.13"
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+implicit_reexport = false
+strict_equality = true
+strict = true
+show_error_context = true
+show_error_codes = true
+pretty = true
+plugins = ["pydantic.mypy"]
+show_traceback = true
+raise_exceptions = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+check_untyped_defs = true
+
+[tool.mypy-tests]
+ignore_errors = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
+
+[tool.ruff]
+target-version = "py313"
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+fix = true
+force-exclude = true
+output-format = "grouped"
+show-fixes = true
+indent-width = 4
+line-length = 80
+
+[tool.ruff.analyze]
+detect-string-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = 72
+indent-style = "tab"
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+    "ARG001", # unused arguments in functions
+]
+ignore = [
+    "E501", # line too long, handled by black
+    "B008", # do not perform function calls in argument defaults
+    "W191", # indentation contains tabs
+    "B904", # Allow raising exceptions without from e, for HTTPException
+]
+exclude = ["venv", ".venv", ".mypy_cache", ".ruff_cache", ".pytest_cache"]
+
+[tool.ruff.lint.flake8-unused-arguments]
+ignore-variadic-names = true
+
+[tool.ruff.lint.isort]
+detect-same-package = false
+known-third-party = ["pydantic"]
+case-sensitive = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = ["pydantic.validator"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"                   # google, numpy
+ignore-decorators = ["typing.overload"]
+
+[tool.ruff.lint.pylint]
+allow-dunder-method-names = ["__tablename__", "__table_args__"] # PLW3201
+max-args = 5
+max-bool-expr = 4
+max-returns = 5
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
+
+[tool.pytest.ini_options]
+addopts = [
+    "-rxXs", # Display extra info for test failures
+    "--strict-config", # Enforce strict pytest configuration
+    "--strict-markers", # Enforce strict markers
+    "--ignore=docs_src", # Ignore the 'docs_src' directory
+    "--cov=fastorders-api",
+    "--durations=10",
+]
+filterwarnings = [
+    "error",
+    # For passlib
+    "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning",
+    # see https://trio.readthedocs.io/en/stable/history.html#trio-0-22-0-2022-09-28
+    "ignore:You seem to already have a custom.*:RuntimeWarning:trio",
+    # TODO: remove after upgrading SQLAlchemy to a version that includes the following changes
+    # https://github.com/sqlalchemy/sqlalchemy/commit/59521abcc0676e936b31a523bd968fc157fef0c2
+    'ignore:datetime\.datetime\.utcfromtimestamp\(\) is deprecated and scheduled for removal in a future version\..*:DeprecationWarning:sqlalchemy',
+    # Trio 24.1.0 raises a warning from attrs
+    # Ref: https://github.com/python-trio/trio/pull/3054
+    # Remove once there's a new version of Trio
+    'ignore:The `hash` argument is deprecated*:DeprecationWarning:trio',
+    'ignore:The loop argument is deprecated since Python 3\.8, and scheduled for removal in Python 3\.10:DeprecationWarning:asyncio',
+    "ignore:'cgi' is deprecated:DeprecationWarning",
+    'ignore::pytest.PytestDeprecationWarning:pytest_cov',
+    "ignore::DeprecationWarning",
+    "ignore::UserWarning",
+    "ignore:the imp module is deprecated in favour of importlib:DeprecationWarning",
+]
+junit_duration_report = "call"
+junit_family = "xunit2"
+junit_logging = "system-out"
+junit_log_passing_tests = false
+log_auto_indent = true
+log_cli = true
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s [%(level)s] %(message)s"
+log_cli_level = "INFO"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+log_file = "logs/pytest-logs.txt"
+log_file_date_format = "%Y-%m-%d %H:%M:%S"
+log_file_format = "%(asctime)s [%(level)s] %(message)s"
+log_file_level = "INFO"
+log_format = "%(asctime)s [%(level)s] %(message)s"
+log_level = "INFO"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration (deselect with '-m \"not integration\"')",
+]
+minversion = "6.0"
+norecursedirs = [".svn", "_build", "tmp*", "node_modules", "venv", ".venv"]
+python_classes = "*TestSuite"
+python_files = ["test_*.py", "*_test.py"]
+python_functions = ["test_*", "*_test"]
+pythonpath = ["src", "tests"]
+required_plugins = ["pytest-cov", "pytest-asyncio"]
+testpaths = ["tests"]
+verbosity_assertions = 2
+xfail_strict = true
+
+[tool.coverage.run]
+branch = true
+concurrency = ["thread", "multiprocessing"]
+context = "."
+data_file = "coverage/.coverage"
+disable_warnings = ["module-not-imported"]
+dynamic_context = "test_function"
+omit = [
+    "tests/*",
+    ".ruff_cache/*",
+    ".mypy_cache/*",
+    ".pytest_cache/*",
+    "cache/*",
+    ".venv/*",
+    "venv/*",
+]
+parallel = true
+source = ["tests", "."]
+relative_files = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self\\.debug",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if TYPE_CHECKING:",
+    "@typing.overload",
+    "if __name__ == .__main__.:",
+]
+fail_under = 90.0
+ignore_errors = true
+show_missing = true
+skip_covered = true
+skip_empty = true
+sort = "-Cover"
+
+[tool.coverage.html]
+show_contexts = true
+
+[tool.coverage.paths]
+source = ["."]
