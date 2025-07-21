@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+app: FastAPI = FastAPI()
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root() -> dict[str, str]:
+	return {"message": "Hello World"}
 
 
 @app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+async def say_hello(name: str) -> dict[str, str]:
+	return {"message": f"Hello {name}"}
