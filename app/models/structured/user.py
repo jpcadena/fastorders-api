@@ -4,7 +4,7 @@ A module for user in the app.models package.
 
 from datetime import datetime
 
-from pydantic import UUID4, EmailStr
+from pydantic import UUID4, EmailStr, PastDate
 from pydantic_extra_types.phone_numbers import PhoneNumber
 from sqlalchemy import (
 	Boolean,
@@ -69,7 +69,7 @@ class User(Base):
 		nullable=True,
 		comment="User's gender (optional)",
 	)
-	birthdate: Mapped[Date] = mapped_column(
+	birthdate: Mapped[PastDate] = mapped_column(
 		Date,
 		nullable=True,
 		comment="User's date of birth (optional)",
@@ -112,5 +112,21 @@ class User(Base):
 			"char_length(username) >= 4", name="users_username_length"
 		),
 		CheckConstraint("char_length(email) >= 3", name="users_email_length"),
-		CheckConstraint("LENGTH(password) = 60", name="users_password_length"),
+		CheckConstraint(
+			"char_length(password) = 60", name="users_password_length"
+		),
+		CheckConstraint(
+			"email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$'",
+			name="users_email_length",
+		),
+		CheckConstraint(
+			"char_length(first_name) >= 1", name="users_first_name_length"
+		),
+		CheckConstraint(
+			"char_length(last_name) >= 1", name="users_last_name_length"
+		),
+		CheckConstraint(
+			"phone_number ~ '^tel:\\+\\d{3}-\\d{2}-\\d{3}-\\d{4}$'",
+			name="users_phone_number_format",
+		),
 	)
