@@ -3,6 +3,7 @@ A module for user in the app.models package.
 """
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from pydantic import UUID4, EmailStr, PastDate
 from pydantic_extra_types.phone_numbers import PhoneNumber
@@ -19,6 +20,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums.gender import Gender
 from app.models.base_class import Base
+
+if TYPE_CHECKING:
+	from app.models.structured.order import Order
 
 
 class User(Base):
@@ -105,7 +109,7 @@ class User(Base):
 		comment="Timestamp when the user was last updated",
 	)
 
-	orders = relationship("Order", back_populates="user")
+	orders: Mapped["Order"] = relationship("Order", back_populates="user")
 
 	__table_args__ = (
 		CheckConstraint(
