@@ -121,7 +121,7 @@ class User(Base):
 		),
 		CheckConstraint(
 			"email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$'",
-			name="users_email_length",
+			name="users_email_format",
 		),
 		CheckConstraint(
 			"char_length(first_name) >= 1", name="users_first_name_length"

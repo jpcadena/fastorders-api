@@ -4,7 +4,6 @@ Database session script
 
 import logging
 from collections.abc import AsyncGenerator
-from contextlib import asynccontextmanager
 
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
@@ -38,7 +37,6 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 
-@asynccontextmanager
 async def get_session() -> AsyncGenerator[AsyncSession]:
 	"""
 	Yield an asynchronous session to the database.
