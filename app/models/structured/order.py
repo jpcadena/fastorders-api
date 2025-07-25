@@ -1,5 +1,5 @@
 """
-A module for order in the app.models package.
+A module for order in the app.models.structured package.
 """
 
 from datetime import datetime
@@ -7,12 +7,13 @@ from typing import TYPE_CHECKING
 
 from pydantic import UUID4
 from sqlalchemy import Float, ForeignKey, text
-from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP, UUID
+from sqlalchemy.dialects.postgresql import TIMESTAMP, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_class import Base
 
 if TYPE_CHECKING:
+	from app.models.structured.order_item import OrderItem
 	from app.models.structured.user import User
 
 
@@ -41,11 +42,6 @@ class Order(Base):
 		nullable=False,
 		comment="Total cost of all products in the order",
 	)
-	items: Mapped[list] = mapped_column(
-		JSONB,
-		nullable=False,
-		comment="List of product items in JSON format (id, quantity, price)",
-	)
 	created_at: Mapped[datetime] = mapped_column(
 		TIMESTAMP(timezone=True),
 		default=datetime.now,
@@ -54,3 +50,6 @@ class Order(Base):
 	)
 
 	user: Mapped["User"] = relationship("User", back_populates="orders")
+	order_items: Mapped[list["OrderItem"]] = relationship(
+		"OrderItem", back_populates="order", cascade="all, delete-orphan"
+	)
