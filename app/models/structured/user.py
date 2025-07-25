@@ -109,7 +109,7 @@ class User(Base):
 		comment="Timestamp when the user was last updated",
 	)
 
-	orders: Mapped["Order"] = relationship("Order", back_populates="user")
+	orders: Mapped[list["Order"]] = relationship("Order", back_populates="user")
 
 	__table_args__ = (
 		CheckConstraint(
