@@ -53,4 +53,6 @@ class OrderItem(Base):
 	)
 
 	order: Mapped["Order"] = relationship("Order", back_populates="order_items")
-	product: Mapped["Product"] = relationship("Product")
+	product: Mapped["Product"] = relationship(
+		"Product", back_populates="order_items"
+	)
