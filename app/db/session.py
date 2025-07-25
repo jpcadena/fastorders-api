@@ -15,11 +15,11 @@ from sqlalchemy.ext.asyncio import (
 	create_async_engine,
 )
 
-from app.config.config import sql_database_setting
+from app.config.sql_db_settings import get_sql_db_settings
 
 logger: logging.Logger = logging.getLogger(__name__)
 
-url: str = f"{sql_database_setting.POSTGRES_URL}"
+url: str = f"{get_sql_db_settings().DATABASE_URL}"
 
 async_engine: AsyncEngine = create_async_engine(
 	url,
