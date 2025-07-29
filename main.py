@@ -7,13 +7,13 @@ from pydantic import PositiveInt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # from app.api.api_v1.api import api_router
-# from app.core.lifecycle import lifespan
+from app.core.lifecycle import lifespan
 from app.db.session import check_db_health, get_session
 
 app: FastAPI = FastAPI(
 	debug=True,
 	default_response_class=ORJSONResponse,
-	# lifespan=lifespan,
+	lifespan=lifespan,
 )
 # app.include_router(api_router, prefix="/api/v1")
 
