@@ -6,7 +6,7 @@ from fastapi.responses import ORJSONResponse, RedirectResponse
 from pydantic import PositiveInt
 from sqlalchemy.ext.asyncio import AsyncSession
 
-# from app.api.api_v1.api import api_router
+from app.api.api_v1.api import api_router
 from app.core.lifecycle import lifespan
 from app.db.session import check_db_health, get_session
 
@@ -15,7 +15,7 @@ app: FastAPI = FastAPI(
 	default_response_class=ORJSONResponse,
 	lifespan=lifespan,
 )
-# app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/v1")
 
 
 @app.get(
