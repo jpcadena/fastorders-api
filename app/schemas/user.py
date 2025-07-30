@@ -3,9 +3,9 @@ Pydantic schemas for User used in requests and responses.
 """
 
 from datetime import date, datetime
-from uuid import UUID
 
 from pydantic import (
+	UUID4,
 	BaseModel,
 	ConfigDict,
 	EmailStr,
@@ -139,7 +139,7 @@ class UserResponse(UserBase):
 
 	model_config = ConfigDict(from_attributes=True)
 
-	id: UUID = Field(
+	id: UUID4 = Field(
 		..., title="User ID", description="Unique UUID assigned to the user."
 	)
 	is_active: bool = Field(

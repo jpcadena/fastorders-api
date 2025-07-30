@@ -2,9 +2,8 @@
 A module for order item in the app.schemas package.
 """
 
-from uuid import UUID
-
 from pydantic import (
+	UUID4,
 	BaseModel,
 	ConfigDict,
 	Field,
@@ -16,7 +15,7 @@ from pydantic import (
 class OrderItemBase(BaseModel):
 	"""Base schema for order item shared across operations."""
 
-	product_id: UUID = Field(..., description="Product ID")
+	product_id: UUID4 = Field(..., description="Product ID")
 	quantity: PositiveInt = Field(..., description="Quantity")
 	price_at_purchase: NonNegativeFloat = Field(
 		..., description="Price at purchase"
@@ -43,5 +42,5 @@ class OrderItemResponse(OrderItemBase):
 
 	model_config = ConfigDict(from_attributes=True)
 
-	id: UUID = Field(..., description="Order Item ID")
-	order_id: UUID = Field(..., description="Related Order ID")
+	id: UUID4 = Field(..., description="Order Item ID")
+	order_id: UUID4 = Field(..., description="Related Order ID")
