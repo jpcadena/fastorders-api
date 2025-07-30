@@ -5,8 +5,8 @@ A module for order in the app.models.structured package.
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from pydantic import UUID4
-from sqlalchemy import Float, ForeignKey, text
+from pydantic import UUID4, NonNegativeFloat
+from sqlalchemy import CheckConstraint, Float, ForeignKey, text
 from sqlalchemy.dialects.postgresql import TIMESTAMP, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -37,7 +37,7 @@ class Order(Base):
 		nullable=False,
 		comment="Foreign key referencing the ID of the User who placed the order",
 	)
-	total_amount: Mapped[float] = mapped_column(
+	total_amount: Mapped[NonNegativeFloat] = mapped_column(
 		Float,
 		nullable=False,
 		comment="Total cost of all products in the order",
@@ -52,4 +52,10 @@ class Order(Base):
 	user: Mapped["User"] = relationship("User", back_populates="orders")
 	order_items: Mapped[list["OrderItem"]] = relationship(
 		"OrderItem", back_populates="order", cascade="all, delete-orphan"
+	)
+
+	__table_args__ = (
+		CheckConstraint(
+			"total_amount >= 0", name="order_total_amount_positive"
+		),
 	)
