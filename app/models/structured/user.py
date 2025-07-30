@@ -106,6 +106,7 @@ class User(Base):
 	updated_at: Mapped[datetime] = mapped_column(
 		TIMESTAMP(timezone=True),
 		nullable=True,
+		onupdate=text("now()"),
 		comment="Timestamp when the user was last updated",
 	)
 
