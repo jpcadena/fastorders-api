@@ -6,10 +6,9 @@ import logging
 from typing import Annotated
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, status
 from fastapi.responses import ORJSONResponse
 from pydantic import UUID4
-from sqlalchemy import inspect
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
@@ -22,7 +21,7 @@ router: APIRouter = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.get("/{user_id}", response_model=UserResponse)
-async def get_user(
+async def get_use_by_id(
 	user_id: Annotated[
 		UUID4,
 		Path(
@@ -51,39 +50,51 @@ async def get_user(
 		)
 		logger.error(msg)
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
-	return UserResponse(
-		**{
-			c.key: getattr(user, c.key)
-			for c in inspect(user).mapper.column_attrs
-		}
-	)
+	return UserResponse.model_validate(user)
+
+
+@router.get("", response_model=list[UserResponse])
+async def get_all_users(
+	db: AsyncSession = Depends(get_session),
+):
+	"""
+	**Retrieve all users from the system.**
+
+	## Returns:
+		List[UserResponse]: A list of all registered users
+	"""
+	user_repository: UserRepository = UserRepository(session=db)
+	users: list[User] = await user_repository.get_all()
+	return [UserResponse.model_validate(user) for user in users]
 
 
 @router.post(
-	"/", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+	"", response_model=UserResponse, status_code=status.HTTP_201_CREATED
 )
 async def create_user(
-	user_in: UserCreate,
+	user_create: Annotated[
+		UserCreate,
+		Body(
+			...,
+			title="User create",
+			description="User data to create",
+		),
+	],
 	db: AsyncSession = Depends(get_session),
 ):
 	"""
 	**Create a new user in the database.**
 
 	## Args:
-		user_in (UserCreate): User creation schema
+		user_create (UserCreate): User creation schema
 
 	## Returns:
 		UserResponse: Created user object
 	"""
 	user_repository: UserRepository = UserRepository(session=db)
-	user: User = User(**user_in.model_dump())
+	user: User = User(**user_create.model_dump())
 	new_user: User = await user_repository.create(user)
-	return UserResponse(
-		**{
-			c.key: getattr(new_user, c.key)
-			for c in inspect(new_user).mapper.column_attrs
-		}
-	)
+	return UserResponse.model_validate(new_user)
 
 
 @router.patch("/{user_id}", response_model=UserResponse)
@@ -96,7 +107,14 @@ async def update_user(
 			example=uuid4(),
 		),
 	],
-	user_in: UserUpdate,
+	user_update: Annotated[
+		UserUpdate,
+		Body(
+			...,
+			title="User update",
+			description="User data to update",
+		),
+	],
 	db: AsyncSession = Depends(get_session),
 ):
 	"""
@@ -104,7 +122,7 @@ async def update_user(
 
 	## Args:
 		user_id (UUID4): The user ID
-		user_in (UserUpdate): Fields to update
+		user_update (UserUpdate): Fields to update
 
 	## Returns:
 		UserResponse: Updated user
@@ -116,14 +134,9 @@ async def update_user(
 		logger.error(msg)
 		raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=msg)
 	updated_user: User = await user_repository.update(
-		user, user_in.model_dump(exclude_unset=True)
+		user, user_update.model_dump(exclude_unset=True)
 	)
-	return UserResponse(
-		**{
-			c.key: getattr(updated_user, c.key)
-			for c in inspect(updated_user).mapper.column_attrs
-		}
-	)
+	return UserResponse.model_validate(updated_user)
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -138,7 +151,7 @@ async def delete_user(
 		user_id (UUID4): The user ID
 
 	## Returns:
-		NoneType: None
+		ORJSONResponse: An object containing the flag if the user was deleted or not
 	"""
 	user_repository: UserRepository = UserRepository(session=db)
 	success: bool = await user_repository.delete(user_id)
