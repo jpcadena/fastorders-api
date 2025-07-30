@@ -2,12 +2,16 @@
 Provides CRUD operations for the Order model.
 """
 
-from pydantic import UUID4
+from uuid import UUID
+
+from fastapi import HTTPException, status
+from pydantic import UUID4, NonNegativeFloat
 from sqlalchemy import Result, Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.structured.order import Order
+from app.models.structured import Order, OrderItem, Product
 from app.repositories.base_sql_repository import BaseRepository
+from app.schemas.order import OrderCreate
 
 
 class OrderRepository(BaseRepository[Order]):
@@ -59,3 +63,46 @@ class OrderRepository(BaseRepository[Order]):
 		stmt: Select = select(self.model).where(self.model.user_id == user_id)
 		result: Result = await self.session.execute(stmt)
 		return list(result.scalars().all())
+
+	async def create_with_items(self, order: OrderCreate) -> Order:
+		"""
+		Create an order with items
+
+		Args:
+			order (OrderCreate): The order to create.
+
+		Returns:
+			Order: The created Order object
+
+		Raises:
+			HTTPException: If no product is found or if they are inactive.
+		"""
+		user_id: UUID = order.user_id
+		items: list[OrderItem] = []
+		total_amount: NonNegativeFloat = 0.0
+		for item in order.order_items:
+			product: Product | None = await self.session.get(
+				Product, item.product_id
+			)
+			if not product or not product.is_active:
+				raise HTTPException(
+					status_code=status.HTTP_404_NOT_FOUND,
+					detail=f"Invalid product ID: {item.product_id}",
+				)
+			price: NonNegativeFloat = product.price
+			total_amount += price * item.quantity
+			items.append(
+				OrderItem(
+					product_id=item.product_id,
+					quantity=item.quantity,
+					price_at_purchase=price,
+				)
+			)
+		order: Order = Order(
+			user_id=user_id,
+			total_amount=total_amount,
+			order_items=items,
+		)
+		self.session.add(order)
+		await self.session.flush()
+		return order
