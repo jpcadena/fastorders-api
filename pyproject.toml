@@ -36,7 +36,7 @@ dev = [
     "commitizen>=4.8.3",
     "mypy>=1.17.0",
     "pre-commit>=4.2.0",
-    "ruff>=0.12.6",
+    "ruff>=0.12.7",
     "safety>=3.2.9",
 ]
 test = [
