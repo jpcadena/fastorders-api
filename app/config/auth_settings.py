@@ -68,7 +68,7 @@ class AuthSettings(BaseSettings):
 	@field_validator("MEMCACHED_URI", mode="before")
 	def assemble_memcached_connection(
 		cls,
-		v: str | None,  # noqa: argument-unused
+		v: str | None,  # noqa: ARG001
 		info: ValidationInfo,
 	) -> MultiHostUrl:
 		"""
@@ -97,7 +97,7 @@ class AuthSettings(BaseSettings):
 	@field_validator("AUDIENCE", mode="before")
 	def assemble_audience(
 		cls,
-		v: str | None,  # noqa: argument-unused
+		v: str | None,  # noqa: ARG001
 		info: ValidationInfo,
 	) -> AnyHttpUrl:
 		"""
