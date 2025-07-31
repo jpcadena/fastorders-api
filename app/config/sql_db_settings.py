@@ -2,8 +2,6 @@
 A module for SQL db settings in the app.config package.
 """
 
-from functools import lru_cache
-
 from pydantic import PositiveInt, PostgresDsn, field_validator
 from pydantic_core import MultiHostUrl
 from pydantic_core.core_schema import ValidationInfo
@@ -47,14 +45,3 @@ class SQLDBSettings(BaseSettings):
 			path=info.data.get("POSTGRES_DB"),
 		)
 		return PostgresDsn(f"{multi_host_url}")
-
-
-@lru_cache
-def get_sql_db_settings() -> SQLDBSettings:
-	"""
-	Factory method for getting settings from environment variables.
-
-	Returns:
-		SQLDBSettings: The settings instance.
-	"""
-	return SQLDBSettings()

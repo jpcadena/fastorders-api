@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import (
 	create_async_engine,
 )
 
-from app.config.sql_db_settings import get_sql_db_settings
+from app.config.config import get_sql_db_settings
 
 logger: logging.Logger = logging.getLogger(__name__)
 
