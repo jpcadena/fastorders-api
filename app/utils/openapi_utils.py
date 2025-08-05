@@ -12,26 +12,27 @@ from fastapi.routing import APIRoute
 
 def remove_tag_from_operation_id(tag: str, operation_id: str) -> str:
 	"""
-	Remove tag from the operation ID
+	Removes a specific tag prefix from the given operation ID.
 
-	:param tag: Tag to remove
-	:type tag: str
-	:param operation_id: Original operation ID
-	:type operation_id: str
-	:return: Updated operation ID
-	:rtype: str
+	Args:
+		tag (str): The tag to remove from the operation ID.
+		operation_id (str): The original operation ID.
+
+	Returns:
+		str: The updated operation ID without the tag prefix.
 	"""
 	return operation_id.removeprefix(f"{tag}-")
 
 
 def update_operation_id(operation: dict[str, Any]) -> None:
 	"""
-	Update the operation ID of a single operation.
+	Updates the operationId of an OpenAPI operation by removing the tag prefix.
 
-	:param operation: Operation object
-	:type operation: dict[str, Any]
-	:return: None
-	:rtype: NoneType
+	Args:
+		operation (dict[str, Any]): The OpenAPI operation object.
+
+	Returns:
+		NoneType: None
 	"""
 	if operation.get(
 		"tags",
@@ -46,12 +47,13 @@ def modify_json_data(
 	data: dict[str, dict[str, Any]],
 ) -> dict[str, dict[str, Any]]:
 	"""
-	Modify the JSON data
+	Modifies the OpenAPI JSON data by updating operationIds in the paths.
 
-	:param data: JSON data to modify
-	:type data: dict[str, Any]
-	:return: Modified JSON data
-	:rtype: dict[str, Any]
+	Args:
+		data (dict[str, dict[str, Any]]): The OpenAPI JSON schema to modify.
+
+	Returns:
+		dict[str, dict[str, Any]]: The modified OpenAPI schema.
 	"""
 	paths: dict[str, dict[str, dict[str, Any]]] | None = data.get("paths")
 	if not paths:
@@ -66,12 +68,13 @@ def modify_json_data(
 
 def custom_generate_unique_id(route: APIRoute) -> str:
 	"""
-	Generate a custom unique ID for each route in API
+	Generates a custom unique ID for API routes based on tags and route names.
 
-	:param route: endpoint route
-	:type route: APIRoute
-	:return: new ID based on tag and route name
-	:rtype: str
+	Args:
+		route (APIRoute): The FastAPI route object.
+
+	Returns:
+		str: A unique ID composed of the route's tag and name.
 	"""
 	if route.name in (
 		"redirect_to_docs",
@@ -86,16 +89,15 @@ def write_schema_to_file(
 	schema: dict[str, dict[str, Any]], file_path: str, encoding: str
 ) -> None:
 	"""
-	Writes the given schema to a file.
+	Writes the given OpenAPI schema to a file in JSON format.
 
-	:param schema: Schema to write.
-	:type schema: dict[str, dict[str, Any]]
-	:param file_path: Path of the file.
-	:type file_path: str
-	:param encoding: Encoding of the file.
-	:type encoding: str
-	:return: None
-	:rtype: NoneType
+	Args:
+		schema (dict[str, dict[str, Any]]): The OpenAPI schema to write.
+		file_path (str): The file path where the schema should be saved.
+		encoding (str): The file encoding to use.
+
+	Returns:
+		NoneType: None
 	"""
 	with open(file_path, mode="w", encoding=encoding) as out_file:
 		out_file.write(json.dumps(schema, indent=4))
@@ -103,15 +105,17 @@ def write_schema_to_file(
 
 def custom_openapi(app: FastAPI) -> dict[str, Any]:
 	"""
-	Generate a custom OpenAPI schema for the application.
+	Generates and caches a custom OpenAPI schema for the FastAPI application.
 
-	This function customizes the default FastAPI OpenAPI generation by
-	incorporating additional configuration settings and modifying the schema.
-	The modified schema is then cached for subsequent requests.
-	:param app: FastAPI instance.
-	:type app: FastAPI
-	:return: Customized OpenAPI schema.
-	:rtype: dict[str, Any]
+	This function uses FastAPI's default OpenAPI generation, applies custom
+	modifications, and writes the schema to a file. The schema is cached for
+	future use to avoid regeneration on every request.
+
+	Args:
+		app (FastAPI): The FastAPI application instance.
+
+	Returns:
+		dict[str, Any]: The customized OpenAPI schema.
 	"""
 	if app.openapi_schema:
 		return app.openapi_schema

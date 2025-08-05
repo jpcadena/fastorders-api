@@ -12,6 +12,8 @@ from fastapi import FastAPI
 from app.config.config import get_auth_settings, get_init_settings, get_settings
 from app.db.init_db import init_db
 
+# from app.db.init_nosql_db import init_nosql_db
+
 logger: logging.Logger = logging.getLogger(__name__)
 
 
@@ -33,7 +35,9 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[Any]:  # noqa: ARG001
 		application.state.auth_settings = get_auth_settings()
 		logger.info("Configuration settings loaded.")
 		await init_db()
-		logger.info("Database initialized.")
+		logger.info("PostgreSQL initialized.")
+		# await init_nosql_db()
+		# logger.info("MongoDB initialized.")
 		yield
 	except Exception as exc:
 		logger.error(f"Error during application startup: {exc}")

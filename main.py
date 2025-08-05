@@ -75,10 +75,11 @@ async def custom_swagger_ui_html(request: Request) -> HTMLResponse:
 	"""
 	Custom Swagger UI for API documentation page in HTML
 
-	:param request: The FastAPI request from the server
-	:type request: Request
-	:return: The response in HTML
-	:rtype: HTMLResponse
+	Args:
+		request (Request): The FastAPI request from the server
+
+	Returns:
+		HTMLResponse: The response in HTML
 	"""
 	root_path = request.scope.get("root_path", "").rstrip("/")
 	openapi_url = root_path + app.openapi_url
