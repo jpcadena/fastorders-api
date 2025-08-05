@@ -17,12 +17,9 @@ from pydantic import (
 	field_validator,
 )
 
-from app.config.auth_settings import AuthSettings
-from app.config.config import get_auth_settings
+from app.config.config import auth_setting
 from app.core.enums.toke_type import TokenType
 from app.exceptions.exceptions import ServiceException
-
-auth_setting: AuthSettings = get_auth_settings()
 
 
 class RegisteredClaimsToken(BaseModel):

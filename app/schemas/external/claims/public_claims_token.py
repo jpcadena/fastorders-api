@@ -8,11 +8,6 @@ from pydantic import (
 	Field,
 )
 
-from app.config.auth_settings import AuthSettings
-from app.config.config import get_auth_settings
-
-auth_setting: AuthSettings = get_auth_settings()
-
 
 class PublicClaimsToken(BaseModel):
 	"""

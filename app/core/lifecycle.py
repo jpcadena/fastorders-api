@@ -9,6 +9,7 @@ from typing import Any
 
 from fastapi import FastAPI
 
+from app.config.config import get_auth_settings, get_init_settings, get_settings
 from app.db.init_db import init_db
 
 logger: logging.Logger = logging.getLogger(__name__)
@@ -27,6 +28,10 @@ async def lifespan(application: FastAPI) -> AsyncGenerator[Any]:  # noqa: ARG001
 	"""
 	logger.info("Starting API...")
 	try:
+		application.state.settings = get_settings()
+		application.state.init_settings = get_init_settings()
+		application.state.auth_settings = get_auth_settings()
+		logger.info("Configuration settings loaded.")
 		await init_db()
 		logger.info("Database initialized.")
 		yield

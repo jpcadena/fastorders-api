@@ -52,3 +52,9 @@ def get_settings() -> Settings:
 		Settings: The settings instance.
 	"""
 	return Settings()
+
+
+init_setting: InitSettings = get_init_settings()
+setting: Settings = get_settings()
+sql_db_setting: SQLDBSettings = get_sql_db_settings()
+auth_setting: AuthSettings = get_auth_settings()

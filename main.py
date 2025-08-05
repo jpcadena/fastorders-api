@@ -5,10 +5,13 @@ from fastapi import Depends, FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import ORJSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pydantic import PositiveInt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.api import api_router
+from app.config.config import auth_setting, init_setting, setting
 from app.core.lifecycle import lifespan
 from app.db.session import check_db_health, get_session
 from app.middlewares.security_headers_middleware import (
@@ -29,7 +32,17 @@ app.add_middleware(
 	allow_headers=["*"],
 	allow_credentials=True,
 )
-app.include_router(api_router, prefix="/api/v1")
+app.mount(
+	init_setting.ASSETS_DIR,
+	StaticFiles(
+		directory=init_setting.ASSETS_APP,
+	),
+	name=init_setting.ASSETS_APP,
+)
+templates: Jinja2Templates = Jinja2Templates(
+	directory=init_setting.TEMPLATES_DIR, autoescape=False, auto_reload=True
+)
+app.include_router(api_router, prefix=auth_setting.API_V1_STR)
 
 
 @app.get(
@@ -76,8 +89,8 @@ async def check_health(
 if __name__ == "__main__":
 	uvicorn.run(
 		"main:app",
-		host="",
-		port=8081,
-		reload=True,
-		log_level="info",
+		host=f"{setting.HOST}",
+		port=setting.PORT,
+		reload=setting.SERVER_RELOAD,
+		log_level=setting.SERVER_LOG_LEVEL,
 	)
