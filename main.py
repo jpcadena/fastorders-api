@@ -2,6 +2,8 @@ from typing import Annotated
 
 import uvicorn
 from fastapi import Depends, FastAPI, status
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import ORJSONResponse, RedirectResponse
 from pydantic import PositiveInt
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,11 +11,23 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.api_v1.api import api_router
 from app.core.lifecycle import lifespan
 from app.db.session import check_db_health, get_session
+from app.middlewares.security_headers_middleware import (
+	SecurityHeadersMiddleware,
+)
 
 app: FastAPI = FastAPI(
 	debug=True,
 	default_response_class=ORJSONResponse,
 	lifespan=lifespan,
+)
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(GZipMiddleware)
+app.add_middleware(
+	CORSMiddleware,
+	allow_origins=["*"],
+	allow_methods=["*"],
+	allow_headers=["*"],
+	allow_credentials=True,
 )
 app.include_router(api_router, prefix="/api/v1")
 
