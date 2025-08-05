@@ -12,7 +12,10 @@ class SQLDBSettings(BaseSettings):
 	"""SQLDB settings class"""
 
 	model_config = SettingsConfigDict(
-		env_file=".env", env_file_encoding="utf-8", case_sensitive=True
+		env_file=".env",
+		env_file_encoding="utf-8",
+		case_sensitive=True,
+		extra="allow",
 	)
 	POSTGRES_SCHEME: str
 	POSTGRES_USER: str

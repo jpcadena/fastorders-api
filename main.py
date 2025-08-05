@@ -1,30 +1,32 @@
-from typing import Annotated
+from functools import partial
 
 import uvicorn
-from fastapi import Depends, FastAPI, status
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import ORJSONResponse, RedirectResponse
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.requests import Request
+from fastapi.responses import HTMLResponse, ORJSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import PositiveInt
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.api import api_router
 from app.config.config import auth_setting, init_setting, setting
 from app.core.lifecycle import lifespan
-from app.db.session import check_db_health, get_session
 from app.middlewares.security_headers_middleware import (
 	SecurityHeadersMiddleware,
 )
+from app.utils.openapi_utils import custom_generate_unique_id, custom_openapi
 
 app: FastAPI = FastAPI(
+	openapi_url=f"{auth_setting.API_V1_STR}{init_setting.OPENAPI_FILE_PATH}",
 	debug=True,
 	default_response_class=ORJSONResponse,
 	lifespan=lifespan,
+	generate_unique_id_function=custom_generate_unique_id,
+	docs_url=None,
 )
-app.add_middleware(SecurityHeadersMiddleware)
-app.add_middleware(GZipMiddleware)
+app.openapi = partial(custom_openapi, app)
 app.add_middleware(
 	CORSMiddleware,
 	allow_origins=["*"],
@@ -32,6 +34,9 @@ app.add_middleware(
 	allow_headers=["*"],
 	allow_credentials=True,
 )
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(GZipMiddleware)
+
 app.mount(
 	init_setting.ASSETS_DIR,
 	StaticFiles(
@@ -60,30 +65,28 @@ async def redirect_to_docs() -> RedirectResponse:
 	return RedirectResponse("/docs")
 
 
-@app.get(
-	"/health",
-)
-async def check_health(
-	session: Annotated[AsyncSession, Depends(get_session)],
-) -> ORJSONResponse:
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html(request: Request) -> HTMLResponse:
 	"""
-	**Check the health of the application backend.**
+	Custom Swagger UI for API documentation page in HTML
 
-	## Returns:
-		ORJSONResponse: The JSON response from the health check
-
-	\f
-	Args:
-		session (AsyncSession): The database session as a dependency injection
+	:param request: The FastAPI request from the server
+	:type request: Request
+	:return: The response in HTML
+	:rtype: HTMLResponse
 	"""
-	health_status: dict[str, str] = {
-		"status": "healthy",
-	}
-	status_code: PositiveInt = status.HTTP_200_OK
-	if not await check_db_health(session):
-		health_status["status"] = "unhealthy"
-		status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-	return ORJSONResponse(health_status, status_code=status_code)
+	root_path = request.scope.get("root_path", "").rstrip("/")
+	openapi_url = root_path + app.openapi_url
+	oauth2_redirect_url = app.swagger_ui_oauth2_redirect_url
+	if oauth2_redirect_url:
+		oauth2_redirect_url = root_path + oauth2_redirect_url
+	return get_swagger_ui_html(
+		openapi_url=openapi_url,
+		title=init_setting.API_NAME + " - Swagger UI",
+		oauth2_redirect_url=oauth2_redirect_url,
+		init_oauth=app.swagger_ui_init_oauth,
+		swagger_ui_parameters=app.swagger_ui_parameters,
+	)
 
 
 if __name__ == "__main__":

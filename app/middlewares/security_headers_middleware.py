@@ -183,7 +183,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 		if request.url.path.startswith("/docs") or request.url.path.startswith(
 			"/redoc"
 		):
-			csp_options = self.swagger_csp_options.copy()
+			csp_options: dict[str, list[str]] = self.swagger_csp_options.copy()
 			swagger_sha_key: str = (
 				request.app.state.auth_settings.SWAGGER_SHA_KEY
 			)

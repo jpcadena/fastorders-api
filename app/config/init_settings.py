@@ -45,10 +45,9 @@ class InitSettings(BaseSettings):
 	img_b64: str = convert_image_to_base64(
 		IMAGES_DIRECTORY.resolve() / "project.png"
 	)
-	DESCRIPTION: str = f"""
-	**FastAPI**, **SQLAlchemy** and **MemCached** helps you do awesome stuff.
-	🚀\n\n<img src="{img_b64}" width="1000px" height="500px"/>
-	"""
+	DESCRIPTION: str = f"""**FastAPI**, **SQLAlchemy** and **MemCached** helps
+	you do awesome stuff.
+	🚀\n\n<img src="{img_b64}" width="800px" height="400px"/>"""
 	LICENSE_INFO: dict[str, str] = {
 		"name": "MIT",
 		"identifier": "MIT",
