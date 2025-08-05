@@ -66,9 +66,8 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 			"default-src": ["'self'"],
 			"script-src": [
 				"'self'",
-				"https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui"
-				"-bundle.js",
-				"'sha256-swagger_sha_key'",
+				"https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+				"data:",
 			],
 			"style-src": [
 				"'self'",
@@ -76,7 +75,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 			],
 			"img-src": ["'self'", "data:", "https:"],
 			"font-src": ["'self'", "https:", "data:"],
-			"connect-src": ["'self'", "https:"],
+			"connect-src": ["'self'", "https:", "http://localhost"],
 			"frame-ancestors": ["'none'"],
 		}
 
@@ -184,16 +183,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 			"/redoc"
 		):
 			csp_options: dict[str, list[str]] = self.swagger_csp_options.copy()
-			swagger_sha_key: str = (
-				request.app.state.auth_settings.SWAGGER_SHA_KEY
-			)
 			csp_options["script-src"] = [
 				"'self'",
-				"https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui"
-				"-bundle.js",
-				f"'sha256-{swagger_sha_key}'",
+				"https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
+				"data:",
+				"'unsafe-inline'",
 			]
-			logger.info("Applying Swagger UI specific CSP with dynamic SHA key")
+			logger.info("Applying Swagger UI specific CSP with dynamic nonce")
 		else:
 			csp_options = self.default_csp_options
 			logger.info("Applying default CSP")

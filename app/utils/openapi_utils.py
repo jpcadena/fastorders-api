@@ -76,6 +76,7 @@ def custom_generate_unique_id(route: APIRoute) -> str:
 	if route.name in (
 		"redirect_to_docs",
 		"custom_swagger_ui_html",
+		"check_health",
 	):
 		return str(route.name)
 	return f"{route.tags[0]}-{route.name}"
