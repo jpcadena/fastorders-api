@@ -375,6 +375,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-extra-types" },
     { name = "pydantic-settings" },
+    { name = "resend" },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "uvicorn" },
 ]
@@ -409,6 +410,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-extra-types", specifier = ">=2.10.5" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "resend", specifier = ">=2.11.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.42" },
     { name = "uvicorn", specifier = ">=0.35.0" },
 ]
@@ -1003,6 +1005,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e1/0a/929373653770d8a0d7ea76c37de6e41f11eb07559b103b1c02cafb3f7cf8/requests-2.32.4.tar.gz", hash = "sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422", size = 135258, upload-time = "2025-06-09T16:43:07.34Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7c/e4/56027c4a6b4ae70ca9de302488c5ca95ad4a39e190093d6c1a8ace08341b/requests-2.32.4-py3-none-any.whl", hash = "sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c", size = 64847, upload-time = "2025-06-09T16:43:05.728Z" },
+]
+
+[[package]]
+name = "resend"
+version = "2.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ee/a6/72a58e10bf3d4d3bf529daaa54296eae7252970eb4bfe6dd2a0bbc6c584d/resend-2.11.0.tar.gz", hash = "sha256:b85e526ccb3fa7432aead57f6cc137435c34b19d354be4cd2deba321dd9a4860", size = 15161, upload-time = "2025-07-10T01:52:47.364Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/2f/ed950bdf3aa6f167d510e484ba7a9792317ec9e5a1b807ba571269b01b9a/resend-2.11.0-py2.py3-none-any.whl", hash = "sha256:fefa22ae5c5c79aca706ce018c89f9fe181148ad368fac2f1b4a899e4608f117", size = 21564, upload-time = "2025-07-10T01:52:45.814Z" },
 ]
 
 [[package]]
