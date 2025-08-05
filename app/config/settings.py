@@ -43,11 +43,14 @@ class Settings(BaseSettings):
 		"""
 		Assemble a list of allowed CORS origins.
 
-		:param v: Provided CORS origins, either a string or a list of
-		strings
-		:type v: Union[str, list[str]]
-		:return: List of Backend CORS origins to be accepted
-		:rtype: Union[list[str], str]
+		Args:
+			v (str | list[str]): Provided CORS origins, either a string or a list of strings
+
+		Returns:
+			str | list[str]: List of Backend CORS origins to be accepted
+
+		Raises:
+			ValueError: If `v` is not a string or a list of strings
 		"""
 		if isinstance(v, str) and not v.startswith("["):
 			return [i.strip() for i in v.split(",")]
@@ -69,12 +72,15 @@ class Settings(BaseSettings):
 		"""
 		Assemble contact information
 
-		:param v: Variables to consider
-		:type v: str
-		:param info: The field validation info
-		:type info: ValidationInfo
-		:return: The contact attribute
-		:rtype: dict[str, str]
+		Args:
+			v (str | None): Variables to consider
+			info (ValidationInfo): Validation info
+
+		Returns:
+			dict[str, str]: The contact attribute
+
+		Raises:
+			ValueError: If `v` is not a string or is not set
 		"""
 		if info.config is None:
 			raise ValueError("info.config cannot be None")
