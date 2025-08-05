@@ -5,6 +5,8 @@ A module for config in the app.config package.
 from functools import lru_cache
 
 from app.config.auth_settings import AuthSettings
+from app.config.init_settings import InitSettings
+from app.config.settings import Settings
 from app.config.sql_db_settings import SQLDBSettings
 
 
@@ -28,3 +30,25 @@ def get_auth_settings() -> AuthSettings:
 		AuthSettings: The settings instance for authentication.
 	"""
 	return AuthSettings()
+
+
+@lru_cache
+def get_init_settings() -> InitSettings:
+	"""
+	Factory method for getting init settings.
+
+	Returns:
+		InitSettings: The init settings instance.
+	"""
+	return InitSettings()
+
+
+@lru_cache
+def get_settings() -> Settings:
+	"""
+	Factory method for getting settings from environment variables.
+
+	Returns:
+		Settings: The settings instance.
+	"""
+	return Settings()

@@ -24,7 +24,9 @@ class SQLDBSettings(BaseSettings):
 
 	@field_validator("DATABASE_URL", mode="before")
 	def assemble_postgres_dsn(
-		cls, v: str | None, info: ValidationInfo
+		cls,
+		v: str | None,  # noqa: ARG001
+		info: ValidationInfo,
 	) -> PostgresDsn:
 		"""
 		Assembles the database connection string from environment variables.
