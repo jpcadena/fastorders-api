@@ -57,7 +57,6 @@ class AuthSettings(BaseSettings):
 	EMAIL_RESET_TOKEN_EXPIRE_HOURS: PositiveInt
 	AUDIENCE: AnyHttpUrl | None = None
 	STRICT_TRANSPORT_SECURITY_MAX_AGE: PositiveInt
-	SWAGGER_SHA_KEY: str
 
 	MEMCACHED_HOST: str
 	MEMCACHED_PORT: PositiveInt

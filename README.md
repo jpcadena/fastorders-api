@@ -187,33 +187,8 @@ authentication.
 <!-- USAGE EXAMPLES -->
 
 ## Usage
-1. Generate the `SWAGGER_SHA_KEY` variable with the following code on **python** console:
 
-   ```bash
-   import hashlib
-   import base64
-
-   swagger_inline_script: bytes = b"""
-   const ui = SwaggerUIBundle({
-       url: '/openapi.json',
-       "dom_id": "#swagger-ui",
-       "layout": "BaseLayout",
-       "deepLinking": true,
-       "showExtensions": true,
-       "showCommonExtensions": true,
-       oauth2RedirectUrl: window.location.origin + '/docs/oauth2-redirect',
-       presets: [
-       SwaggerUIBundle.presets.apis,
-       SwaggerUIBundle.SwaggerUIStandalonePreset
-       ],
-   })
-   """
-   sha256_digest: bytes = hashlib.sha256(swagger_inline_script).digest()
-   swagger_sha_key: str = base64.b64encode(sha256_digest).decode()
-   print(f"SWAGGER_SHA_KEY: {swagger_sha_key}")
-    ```
-
-2. Execute with console
+1. Execute with console
 
     ```bash
     python main.py
