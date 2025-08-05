@@ -375,6 +375,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pydantic-extra-types" },
     { name = "pydantic-settings" },
+    { name = "python-binary-memcached" },
     { name = "resend" },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "uvicorn" },
@@ -410,6 +411,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.11.7" },
     { name = "pydantic-extra-types", specifier = ">=2.10.5" },
     { name = "pydantic-settings", specifier = ">=2.10.1" },
+    { name = "python-binary-memcached", specifier = ">=0.31.4" },
     { name = "resend", specifier = ">=2.11.0" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0.42" },
     { name = "uvicorn", specifier = ">=0.35.0" },
@@ -955,6 +957,19 @@ wheels = [
 ]
 
 [[package]]
+name = "python-binary-memcached"
+version = "0.31.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+    { name = "uhashring" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/b7/237430c8f55c807f0f7de5d3928e3318e7cda46f8cdfdfde1c56529d8ab9/python_binary_memcached-0.31.4.tar.gz", hash = "sha256:f183bc67fd218c01ebc0bf4e9929a210dd5aa07fda53d5b627d0b443b76e2818", size = 96961, upload-time = "2025-01-08T21:18:21.493Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/14/558657f9d646909f9b959c05c9dfef4ecc6f66c571442aa346079500b290/python_binary_memcached-0.31.4-py3-none-any.whl", hash = "sha256:f7a74f212567e37520dd550f0d088b99bb4bae01034d3078135bfc16285960f9", size = 18618, upload-time = "2025-01-08T21:18:19.44Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1150,6 +1165,15 @@ wheels = [
 ]
 
 [[package]]
+name = "six"
+version = "1.17.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
 name = "sniffio"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1260,6 +1284,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f8/b1/0c11f5058406b3af7609f121aaa6b609744687f1d158b3c3a5bf4cc94238/typing_inspection-0.4.1.tar.gz", hash = "sha256:6ae134cc0203c33377d43188d4064e9b357dba58cff3185f22924610e70a9d28", size = 75726, upload-time = "2025-05-21T18:55:23.885Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/17/69/cd203477f944c353c31bade965f880aa1061fd6bf05ded0726ca845b6ff7/typing_inspection-0.4.1-py3-none-any.whl", hash = "sha256:389055682238f53b04f7badcb49b989835495a96700ced5dab2d8feae4b26f51", size = 14552, upload-time = "2025-05-21T18:55:22.152Z" },
+]
+
+[[package]]
+name = "uhashring"
+version = "2.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/11/2a7f920746b024f7bd67479489b2a4b2d3af7b34e8d5ba8ebdcfbcce21fb/uhashring-2.4.tar.gz", hash = "sha256:8ab30868f4ac079d2a8c58c43c35a294339efef7b069d260428617da48e5f020", size = 9258, upload-time = "2025-04-09T14:59:25.444Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/25/d0ca8d881042db89431646f47a97714c7213060197fd5fc5781e9a77e4f9/uhashring-2.4-py3-none-any.whl", hash = "sha256:0d6cae4ac3205ef039860b0befd6bc762f1686a276805bf1b998c8657124df62", size = 11073, upload-time = "2025-04-09T14:59:22.899Z" },
 ]
 
 [[package]]
