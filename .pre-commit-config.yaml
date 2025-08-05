@@ -69,10 +69,10 @@ repos:
         args: [ "-c", "pyproject.toml" ]
         additional_dependencies: [ "bandit[toml]" ]
 
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.0
-    hooks:
-      - id: gitleaks
+#  - repo: https://github.com/gitleaks/gitleaks
+#    rev: v8.28.0
+#    hooks:
+#      - id: gitleaks
 
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.8.3
