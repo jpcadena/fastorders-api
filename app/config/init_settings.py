@@ -20,11 +20,12 @@ class InitSettings(BaseSettings):
 
 	ASSETS_APP: str = "assets"
 	ASSETS_DIR: str = f"/{ASSETS_APP}"
+	STATIC_DIR: str = "static"
 	TEMPLATES_DIR: str = "static/templates"
 	IMAGES_SUBDIR: str = "images"
 	CSS_SUBDIR: str = "css"
 	IMAGES_DIRECTORY: DirectoryPath = Path(ASSETS_APP) / IMAGES_SUBDIR
-	CSS_DIRECTORY: DirectoryPath = Path(ASSETS_APP) / CSS_SUBDIR
+	CSS_DIRECTORY: DirectoryPath = Path(STATIC_DIR) / CSS_SUBDIR
 	API_NAME: str = "Fast Orders API"
 	PROJECT_NAME: str = "fastorders-api"
 	VERSION: str = "1.0"
