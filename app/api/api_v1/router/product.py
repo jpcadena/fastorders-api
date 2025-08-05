@@ -155,7 +155,7 @@ async def update_product(
 
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def soft_delete_product(
+async def set_product_as_inactive(
 	product_id: Annotated[
 		UUID4,
 		Path(
