@@ -6,6 +6,7 @@ from functools import lru_cache
 
 from app.config.auth_settings import AuthSettings
 from app.config.init_settings import InitSettings
+from app.config.nosql_db_settings import NoSQLDatabaseSettings
 from app.config.settings import Settings
 from app.config.sql_db_settings import SQLDBSettings
 
@@ -54,7 +55,19 @@ def get_settings() -> Settings:
 	return Settings()
 
 
+@lru_cache
+def get_nosql_db_settings() -> NoSQLDatabaseSettings:
+	"""
+	Factory method for getting NoSQL db settings from environment variables.
+
+	Returns:
+		NoSQLDatabaseSettings: The NoSQL settings instance.
+	"""
+	return NoSQLDatabaseSettings()
+
+
 init_setting: InitSettings = get_init_settings()
 setting: Settings = get_settings()
 sql_db_setting: SQLDBSettings = get_sql_db_settings()
 auth_setting: AuthSettings = get_auth_settings()
+nosql_db_settings: NoSQLDatabaseSettings = get_nosql_db_settings()
